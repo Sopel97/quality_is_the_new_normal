@@ -11,6 +11,7 @@ do
     local ACCUMULATOR_ENERGY_CAPACITY_INCREASE_PER_QUALITY_LEVEL = 1.0
     local ACCUMULATOR_ENERGY_THROUGHPUT_INCREASE_PER_QUALITY_LEVEL = 0.3
     local LAB_RESEARCHING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local BEACON_POWER_CONSUMPTION_DECREASE_PER_QUALITY_LEVEL = 1.0
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -98,6 +99,18 @@ do
         end
     end
 
+    local function alter_beacons(max_quality_level)
+        local power_consumption_multiplier = 1.0 + BEACON_POWER_CONSUMPTION_DECREASE_PER_QUALITY_LEVEL * max_quality_level
+        for key, prototype in pairs(data.raw["beacon"]) do
+            prototype.energy_usage = multiply_energy(prototype.energy_usage, power_consumption_multiplier)
+
+            if prototype.distribution_effectivity_bonus_per_quality_level ~= nil then
+                local distribution_effectivity_offset = -prototype.distribution_effectivity_bonus_per_quality_level * max_quality_level
+                prototype.distribution_effectivity = prototype.distribution_effectivity + distribution_effectivity_offset
+            end
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -107,4 +120,5 @@ do
     alter_solar_panels(MAX_QUALITY_LEVEL)
     alter_accumulators(MAX_QUALITY_LEVEL)
     alter_labs(MAX_QUALITY_LEVEL)
+    alter_beacons(MAX_QUALITY_LEVEL)
 end
