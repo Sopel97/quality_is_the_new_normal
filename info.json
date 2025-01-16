@@ -1,0 +1,15 @@
+{
+	"name": "quality_is_the_new_normal",
+	"version": "0.1.0",
+	"factorio_version": "2.0",
+	"title": "Quality Is The New Normal",
+	"author": "Sopel",
+	"contact": "",
+	"homepage": "",
+	"description": "Scales most entities such that legendary variants match old normal variants. Alternative progression curve to science cost multiplier.",
+	"dependencies": [
+    	"base >= 2.0.0",
+		"quality >= 2.0.0",
+    	"? space-age >= 2.0.0"
+	]
+}
