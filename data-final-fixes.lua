@@ -4,6 +4,7 @@ do
     local CRAFTING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local INSERTER_ROTATION_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local INSERTER_POWER_CONSUMPTION_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local PUMP_PUMPING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -34,7 +35,14 @@ do
         end
     end
 
+    local function alter_pumps(max_quality_level)
+        local pumping_speed_multiplier = 1.0 / (1.0 + PUMP_PUMPING_SPEED_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["pump"]) do
+            prototype.pumping_speed = prototype.pumping_speed * pumping_speed_multiplier
+        end
+    end
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
+    alter_pumps(MAX_QUALITY_LEVEL)
 end
