@@ -12,6 +12,9 @@ do
     local ACCUMULATOR_ENERGY_THROUGHPUT_INCREASE_PER_QUALITY_LEVEL = 0.3
     local LAB_RESEARCHING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local BEACON_POWER_CONSUMPTION_DECREASE_PER_QUALITY_LEVEL = 1.0
+    local MODULE_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local MODULE_PRODUCTIVITY_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local MODULE_EFFICIENCY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -111,6 +114,29 @@ do
         end
     end
 
+    local function alter_modules(max_quality_level)
+        local speed_effect_multiplier = 1.0 / (1.0 + MODULE_SPEED_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        local productivity_effect_multiplier = 1.0 / (1.0 + MODULE_PRODUCTIVITY_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        local efficiency_effect_multiplier = 1.0 / (1.0 + MODULE_EFFICIENCY_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["module"]) do
+            local effect = prototype.effect
+
+            if prototype.category == "speed" then
+                effect.speed = effect.speed * speed_effect_multiplier
+            end
+
+            if prototype.category == "productivity" then
+                effect.productivity = effect.productivity * productivity_effect_multiplier
+            end
+
+            if prototype.category == "efficiency" then
+                effect.consumption = effect.consumption * efficiency_effect_multiplier
+            end
+
+            -- Quality left as-is because it's properly balanced
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -121,4 +147,5 @@ do
     alter_accumulators(MAX_QUALITY_LEVEL)
     alter_labs(MAX_QUALITY_LEVEL)
     alter_beacons(MAX_QUALITY_LEVEL)
+    alter_modules(MAX_QUALITY_LEVEL)
 end
