@@ -10,6 +10,7 @@ do
     local SOLAR_PANEL_ENERGY_PRODUCTION_INCREASE_PER_QUALITY_LEVEL = 0.3
     local ACCUMULATOR_ENERGY_CAPACITY_INCREASE_PER_QUALITY_LEVEL = 1.0
     local ACCUMULATOR_ENERGY_THROUGHPUT_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local LAB_RESEARCHING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -90,6 +91,13 @@ do
         end
     end
 
+    local function alter_labs(max_quality_level)
+        local researching_speed_multiplier = 1.0 / (1.0 + LAB_RESEARCHING_SPEED_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["lab"]) do
+            prototype.researching_speed = prototype.researching_speed * researching_speed_multiplier
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -98,4 +106,5 @@ do
     alter_generators(MAX_QUALITY_LEVEL)
     alter_solar_panels(MAX_QUALITY_LEVEL)
     alter_accumulators(MAX_QUALITY_LEVEL)
+    alter_labs(MAX_QUALITY_LEVEL)
 end
