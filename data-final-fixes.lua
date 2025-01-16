@@ -6,6 +6,7 @@ do
     local INSERTER_POWER_CONSUMPTION_INCREASE_PER_QUALITY_LEVEL = 0.3
     local PUMP_PUMPING_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local BOILER_ENERGY_CONSUMPTION_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local GENERATOR_ENERGY_PRODUCTION_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -50,9 +51,20 @@ do
         end
     end
 
+    local function alter_generators(max_quality_level)
+        local power_production_multiplier = 1.0 / (1.0 + GENERATOR_ENERGY_PRODUCTION_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["generator"]) do
+            prototype.fluid_usage_per_tick = prototype.fluid_usage_per_tick * power_production_multiplier
+            if prototype.max_power_output ~= nil then
+                prototype.max_power_output = multiply_energy(prototype.max_power_output, power_production_multiplier)
+            end
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
     alter_pumps(MAX_QUALITY_LEVEL)
     alter_boilers(MAX_QUALITY_LEVEL)
+    alter_generators(MAX_QUALITY_LEVEL)
 end
