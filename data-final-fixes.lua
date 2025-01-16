@@ -45,6 +45,9 @@ do
         for key, prototype in pairs(data.raw["pump"]) do
             prototype.pumping_speed = prototype.pumping_speed * pumping_speed_multiplier
         end
+        for key, prototype in pairs(data.raw["offshore-pump"]) do
+            prototype.pumping_speed = prototype.pumping_speed * pumping_speed_multiplier
+        end
     end
 
     local function alter_boilers(max_quality_level)
