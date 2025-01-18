@@ -71,6 +71,10 @@ do
                 prototype.max_power_output = multiply_energy(prototype.max_power_output, power_production_multiplier)
             end
         end
+
+        for key, prototype in pairs(data.raw["fusion-generator"]) do
+            prototype.max_fluid_usage = prototype.max_fluid_usage * power_production_multiplier
+        end
     end
 
     local function alter_solar_panels(max_quality_level)
