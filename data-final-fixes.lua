@@ -189,6 +189,13 @@ do
         end
     end
 
+    local function alter_rocket_silos(max_quality_level)
+        local crafting_speed_multiplier = 1.0 / (1.0 + CRAFTING_SPEED_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["rocket-silo"]) do
+            prototype.crafting_speed = prototype.crafting_speed * crafting_speed_multiplier
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -203,6 +210,7 @@ do
     alter_reactors(MAX_QUALITY_LEVEL)
     alter_wagons(MAX_QUALITY_LEVEL)
     alter_roboports(MAX_QUALITY_LEVEL)
+    alter_rocket_silos(MAX_QUALITY_LEVEL)
 
     -- Things left as is by design
     --    - robots - because they would be too bad to be workable at all
