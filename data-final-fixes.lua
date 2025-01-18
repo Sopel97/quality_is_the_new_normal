@@ -16,6 +16,7 @@ do
     local MODULE_PRODUCTIVITY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MODULE_EFFICIENCY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local REACTOR_POWER_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local WAGON_CAPACITY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -158,6 +159,19 @@ do
         end
     end
 
+    local function alter_wagons(max_quality_level)
+        local capacity_multiplier = 1.0 / (1.0 + WAGON_CAPACITY_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        
+        for key, prototype in pairs(data.raw["cargo-wagon"]) do
+            prototype.quality_affects_inventory_size = true
+            prototype.inventory_size = math.floor(prototype.inventory_size * capacity_multiplier + 0.5)
+        end
+
+        for key, prototype in pairs(data.raw["fluid-wagon"]) do
+            prototype.quality_affects_capacity = true
+            prototype.capacity = math.floor(prototype.capacity * capacity_multiplier + 0.5)
+        end
+    end
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -170,4 +184,5 @@ do
     alter_beacons(MAX_QUALITY_LEVEL)
     alter_modules(MAX_QUALITY_LEVEL)
     alter_reactors(MAX_QUALITY_LEVEL)
+    alter_wagons(MAX_QUALITY_LEVEL)
 end
