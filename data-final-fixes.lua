@@ -15,6 +15,7 @@ do
     local MODULE_SPEED_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MODULE_PRODUCTIVITY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MODULE_EFFICIENCY_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local REACTOR_POWER_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -137,6 +138,18 @@ do
         end
     end
 
+    local function alter_reactors(max_quality_level)
+        local power_multiplier = 1.0 / (1.0 + REACTOR_POWER_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        for key, prototype in pairs(data.raw["reactor"]) do
+            prototype.consumption = multiply_energy(prototype.consumption, power_multiplier)
+        end
+
+        for key, prototype in pairs(data.raw["fusion-reactor"]) do
+            prototype.power_input = multiply_energy(prototype.power_input, power_multiplier)
+            prototype.max_fluid_usage = prototype.max_fluid_usage * power_multiplier
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -148,4 +161,5 @@ do
     alter_labs(MAX_QUALITY_LEVEL)
     alter_beacons(MAX_QUALITY_LEVEL)
     alter_modules(MAX_QUALITY_LEVEL)
+    alter_reactors(MAX_QUALITY_LEVEL)
 end
