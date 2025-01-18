@@ -17,6 +17,8 @@ do
     local MODULE_EFFICIENCY_INCREASE_PER_QUALITY_LEVEL = 0.3
     local REACTOR_POWER_INCREASE_PER_QUALITY_LEVEL = 0.3
     local WAGON_CAPACITY_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local ROBOPORT_RECHARGE_RATE_INCREASE_PER_QUALITY_LEVEL = 0.3
+    local PERSONAL_ROBOPORT_ROBOT_LIMIT_INCREASE_PER_QUALITY_LEVEL = 0.3
     local MAX_QUALITY_LEVEL = 5 -- legendary in space-age
 
     local function multiply_energy(energy, mult)
@@ -172,6 +174,21 @@ do
             prototype.capacity = math.floor(prototype.capacity * capacity_multiplier + 0.5)
         end
     end
+
+    local function alter_roboports(max_quality_level)
+        local recharge_rate_multiplier = 1.0 / (1.0 + ROBOPORT_RECHARGE_RATE_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        local robot_limit_multiplier = 1.0 / (1.0 + PERSONAL_ROBOPORT_ROBOT_LIMIT_INCREASE_PER_QUALITY_LEVEL * max_quality_level)
+        
+        for key, prototype in pairs(data.raw["roboport"]) do
+            prototype.charging_energy = multiply_energy(prototype.charging_energy, recharge_rate_multiplier)
+        end
+
+        for key, prototype in pairs(data.raw["roboport-equipment"]) do
+            prototype.charging_energy = multiply_energy(prototype.charging_energy, recharge_rate_multiplier)
+            prototype.robot_limit = math.floor(prototype.robot_limit * robot_limit_multiplier + 0.5)
+        end
+    end
+
     alter_assembling_machines(MAX_QUALITY_LEVEL)
     alter_furnaces(MAX_QUALITY_LEVEL)
     alter_inserters(MAX_QUALITY_LEVEL)
@@ -185,4 +202,5 @@ do
     alter_modules(MAX_QUALITY_LEVEL)
     alter_reactors(MAX_QUALITY_LEVEL)
     alter_wagons(MAX_QUALITY_LEVEL)
+    alter_roboports(MAX_QUALITY_LEVEL)
 end
