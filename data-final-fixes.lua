@@ -75,6 +75,10 @@ do
         for key, prototype in pairs(data.raw["fusion-generator"]) do
             prototype.max_fluid_usage = prototype.max_fluid_usage * power_production_multiplier
         end
+
+        for key, prototype in pairs(data.raw["generator-equipment"]) do
+            prototype.power = multiply_energy(prototype.power, power_production_multiplier)
+        end
     end
 
     local function alter_solar_panels(max_quality_level)
